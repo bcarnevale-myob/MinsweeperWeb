@@ -12,11 +12,13 @@ public class FirstController {
     private WebWriter webWriter;
     private WebReader webReader;
 
-    @RequestMapping("/")
-    public String setUpGame() {
+    @RequestMapping("/setup/{height}/{width}")
+    public String setUpGame(@PathVariable("height") int height, @PathVariable("width") int width) {
         webWriter = new WebWriter();
         webReader = new WebReader();
         this.game = new Game(webReader, webWriter);
+        webReader.setX(height);
+        webReader.setY(width);
         game.setUpGame();
         String bufferContents = webWriter.getBuffer();
         webWriter.flushBuffer();

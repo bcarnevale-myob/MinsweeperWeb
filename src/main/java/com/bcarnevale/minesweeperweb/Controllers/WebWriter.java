@@ -4,7 +4,7 @@ import Game.IWriter;
 
 public class WebWriter implements IWriter {
 
-    private String buffer;
+    private String buffer = "";
 
     public void WebWriter() {
         this.buffer = "";

@@ -12,9 +12,7 @@ public class WebReader implements IReader {
     public String prompt(String s) {
         counter++;
         if(counter == 0) {
-            return "5";
-        } else if (counter == 1) {
-            return "6";
+            return "5,6";
         }
         return x + "," + y;
     }

@@ -54,4 +54,23 @@ public class MinesweeperwebApplicationTests {
 
     }
 
+    @Test
+    public void ifTheGameIsOverNoMoreMovesWillBeAccepted() {
+        // Arrange
+        Coordinates[] minePositions = new Coordinates[1];
+        minePositions[0] = new Coordinates(1,1);
+        FirstController controller = new FirstController(new PredictableNumberGenerator(1, minePositions));
+        controller.setUpGame(5,4);
+
+        // Act
+        controller.makeAMove(1,1);
+        String result = controller.makeAMove(0,3);
+
+        // Assert
+        String expectedResult = "GAME IS OVER! Would you like to start a new game?";
+
+        assertEquals(expectedResult, result);
+
+    }
+
 }

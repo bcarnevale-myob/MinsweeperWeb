@@ -2,7 +2,7 @@ package com.bcarnevale.minesweeperweb.Controllers;
 
 import Game.IWriter;
 
-public class WebWriter implements IWriter {
+public class HTMLWriter implements IWriter {
 
     private String buffer = "";
 
@@ -12,7 +12,7 @@ public class WebWriter implements IWriter {
 
     @Override
     public void write(String s) {
-        buffer += (s +"\n");
+        buffer += (s.replace("\n", "<br>") + "<br>");
     }
 
 

@@ -2,18 +2,13 @@ package com.bcarnevale.minesweeperweb.Controllers;
 
 import Game.IReader;
 
-public class WebReader implements IReader {
+public class HTMLReader implements IReader {
 
-    private int counter = -1;
     private int x;
     private int y;
 
     @Override
     public String prompt(String s) {
-//        counter++;
-//        if(counter == 0) {
-//            return "5,6";
-//        }
         return x + "," + y;
     }
 

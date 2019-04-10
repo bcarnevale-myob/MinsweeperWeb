@@ -11,10 +11,13 @@ public class MinesweeperwebApplicationTests {
 
     @Test
     public void whenANewGameIsLoadedTheDesiredHeightAndWidthCreateAFieldOfTheCorrectSize() {
+        // Arrange
         FirstController controller = new FirstController(new RealRandomNumberGenerator());
+
+        // Act
         String actualField = controller.setUpGame(5,4);
 
-
+        // Assert
         String expectedField =
                 "Welcome To MineSweeper!<br><br>Let's Play...<br>" +
                         "<br>....<br>" +

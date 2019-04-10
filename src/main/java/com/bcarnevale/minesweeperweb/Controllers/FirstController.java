@@ -38,13 +38,15 @@ public class FirstController {
 
     @RequestMapping("/move/{x}/{y}")
     public String makeAMove(@PathVariable("x") int x, @PathVariable("y") int y) {
-        webReader.setX(x);
-        webReader.setY(y);
-        game.play();
-        String bufferContents = webWriter.getBuffer();
-        webWriter.flushBuffer();
-        return bufferContents;
+        if(!(game.getGameIsOver())) {
+            webReader.setX(x);
+            webReader.setY(y);
+            game.play();
+            String bufferContents = webWriter.getBuffer();
+            webWriter.flushBuffer();
+            return bufferContents;
+        }
+        return "GAME IS OVER! Would you like to start a new game?";
     }
-
 
 }

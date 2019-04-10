@@ -1,6 +1,9 @@
 package com.bcarnevale.minesweeperweb.Controllers;
 
+import Field.Size;
 import Game.*;
+import MinePlacer.IRandom;
+import MinePlacer.RealRandomNumberGenerator;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -8,18 +11,26 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class FirstController {
 
+    private final IRandom random;
     private Game game;
-    private WebWriter webWriter;
-    private WebReader webReader;
+    private HTMLWriter webWriter;
+    private HTMLReader webReader;
+
+    public FirstController(IRandom random) {
+        this.random = random;
+    }
+
+    public FirstController() {
+        this.random = new RealRandomNumberGenerator();
+    }
 
     @RequestMapping("/setup/{height}/{width}")
     public String setUpGame(@PathVariable("height") int height, @PathVariable("width") int width) {
-        webWriter = new WebWriter();
-        webReader = new WebReader();
+        webWriter = new HTMLWriter();
+        webReader = new HTMLReader();
         this.game = new Game(webReader, webWriter);
-        webReader.setX(height);
-        webReader.setY(width);
-        game.setUpGame();
+        Size fieldSize = new Size(height, width);
+        game.setUpGame(random, fieldSize);
         String bufferContents = webWriter.getBuffer();
         webWriter.flushBuffer();
         return bufferContents;
@@ -34,5 +45,6 @@ public class FirstController {
         webWriter.flushBuffer();
         return bufferContents;
     }
+
 
 }

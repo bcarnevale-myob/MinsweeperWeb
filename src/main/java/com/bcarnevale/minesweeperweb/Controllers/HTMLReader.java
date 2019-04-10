@@ -10,10 +10,10 @@ public class WebReader implements IReader {
 
     @Override
     public String prompt(String s) {
-        counter++;
-        if(counter == 0) {
-            return "5,6";
-        }
+//        counter++;
+//        if(counter == 0) {
+//            return "5,6";
+//        }
         return x + "," + y;
     }
 

@@ -12,8 +12,9 @@ public class WebWriter implements IWriter {
 
     @Override
     public void write(String s) {
-        buffer += (s + "\n");
+        buffer += (s +"\n");
     }
+
 
     public String getBuffer() {
         return this.buffer;

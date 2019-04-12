@@ -4,6 +4,8 @@ import Field.Size;
 import Game.*;
 import MinePlacer.IRandom;
 import MinePlacer.RealRandomNumberGenerator;
+import com.bcarnevale.minesweeperweb.Game.HTMLReader;
+import com.bcarnevale.minesweeperweb.Game.HTMLWriter;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

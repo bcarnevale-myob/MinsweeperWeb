@@ -1,4 +1,4 @@
-package com.bcarnevale.minesweeperweb.Controllers;
+package com.bcarnevale.minesweeperweb.Game;
 
 import Game.IWriter;
 

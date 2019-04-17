@@ -1,8 +1,8 @@
 package com.bcarnevale.minesweeperweb.Game;
 
-import Game.IWriter;
+import Game.Writer;
 
-public class HTMLWriter implements IWriter {
+public class HTMLWriter implements Writer {
 
     private String buffer = "";
 

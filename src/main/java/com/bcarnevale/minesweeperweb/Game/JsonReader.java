@@ -1,8 +1,8 @@
 package com.bcarnevale.minesweeperweb.Game;
 
-import Game.IReader;
+import Game.Reader;
 
-public class HTMLReader implements IReader {
+public class HTMLReader implements Reader {
 
     private int x;
     private int y;

@@ -1,33 +1,90 @@
 package com.bcarnevale.minesweeperweb;
 
-import Field.Coordinate;
-import MinePlacer.*;
-import com.bcarnevale.minesweeperweb.Controllers.FirstController;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import MinePlacer.Random;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static org.junit.Assert.assertEquals;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class FirstControllerTest {
+public class GameControllerTest {
+    @MockBean
+    private Random mockRandom;
+
     @Autowired
     private MockMvc mvc;
 
     @Test
-    public void getHello() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.get("/").accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().string(equalTo("Greetings from Spring Boot!")));
+    public void setupDoesntAllowGet() throws Exception {
+        mvc.perform(
+                MockMvcRequestBuilders
+                        .get("/api/game/setup/{height}/{width}/",2,2)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isMethodNotAllowed());
     }
 
+    @Test
+    public void setupReturnsField() throws Exception {
+        mvc.perform(
+                post("/api/game/setup/{height}/{width}/",2,2)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().string("{\"field\":[\"..\",\"..\"],\"gameOver\":false}"));
+    }
+
+    @Test
+    public void setupReturnsANewField() throws Exception {
+        mvc.perform(
+                post("/api/game/setup/{height}/{width}/",2,3)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().string("{\"field\":[\"...\",\"...\"],\"gameOver\":false}"));
+    }
+
+    @Test
+    public void playerMakesAMove() throws Exception {
+        when(mockRandom.nextInt(anyInt())).thenReturn(1);
+
+        mvc.perform(
+                post("/api/game/setup/{height}/{width}/",2,3)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        mvc.perform(
+                post("/api/game/play/{x}/{y}/", 0,0)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().string("{\"field\":[\"1..\",\"...\"],\"gameOver\":false}"));
+    }
+
+    @Test
+    public void gameIsOverWhenAMineIsHit() throws Exception {
+
+        when(mockRandom.nextInt(anyInt())).thenReturn(1);
+
+        mvc.perform(
+                post("/api/game/setup/{height}/{width}/",2,3)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        mvc.perform(
+                post("/api/game/play/{x}/{y}/", 1,1)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().string("{\"field\":[\"111\",\"1*1\"],\"gameOver\":true}"));
+    }
 }

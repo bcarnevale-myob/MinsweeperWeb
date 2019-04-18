@@ -2,25 +2,21 @@ package com.bcarnevale.minesweeperweb.Game;
 
 import Game.Writer;
 
-public class HTMLWriter implements Writer {
 
-    private String buffer = "";
+public class JsonWriter implements Writer {
 
-    public void WebWriter() {
-        this.buffer = "";
-    }
+    private String[] buffer = new String[]{};
 
     @Override
     public void write(String s) {
-        buffer += (s.replace("\n", "<br>") + "<br>");
+        buffer = s.split("\n");
     }
 
+    public void writeField(String[] s){
+        buffer = s;
+    }
 
-    public String getBuffer() {
+    public String[] getBuffer() {
         return this.buffer;
-    }
-
-    public void flushBuffer() {
-        this.buffer = "";
     }
 }

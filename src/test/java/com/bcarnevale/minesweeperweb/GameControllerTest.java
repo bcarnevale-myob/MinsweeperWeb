@@ -32,7 +32,7 @@ public class GameControllerTest {
     public void setupDoesntAllowGet() throws Exception {
         mvc.perform(
                 MockMvcRequestBuilders
-                        .get("/api/game/setup/{height}/{width}/",2,2)
+                        .get("/api/game/setup/{height}/{width}/",1,1)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isMethodNotAllowed());
     }
@@ -42,14 +42,38 @@ public class GameControllerTest {
         mvc.perform(
                 post("/api/game/setup/{height}/{width}/",2,2)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().string("{\"field\":[\"..\",\"..\"],\"gameOver\":false}"));
+                .andExpect(status().isCreated()).andExpect(content().string(""));
     }
 
     @Test
     public void setupReturnsANewField() throws Exception {
+        when(mockRandom.nextInt(anyInt())).thenReturn(1);
+
         mvc.perform(
                 post("/api/game/setup/{height}/{width}/",2,3)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+
+        mvc.perform(
+                post("/api/game/play/{x}/{y}/", 0,0)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+
+        mvc.perform(
+                MockMvcRequestBuilders
+                        .get("/api/game/board/")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().string("{\"field\":[\"1..\",\"...\"],\"gameOver\":false}"));
+
+        mvc.perform(
+                post("/api/game/setup/{height}/{width}/",2,3)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+
+        mvc.perform(
+                MockMvcRequestBuilders
+                        .get("/api/game/board/")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().string("{\"field\":[\"...\",\"...\"],\"gameOver\":false}"));
@@ -62,10 +86,16 @@ public class GameControllerTest {
         mvc.perform(
                 post("/api/game/setup/{height}/{width}/",2,3)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
 
         mvc.perform(
                 post("/api/game/play/{x}/{y}/", 0,0)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+
+        mvc.perform(
+                MockMvcRequestBuilders
+                        .get("/api/game/board/")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().string("{\"field\":[\"1..\",\"...\"],\"gameOver\":false}"));
@@ -73,18 +103,46 @@ public class GameControllerTest {
 
     @Test
     public void gameIsOverWhenAMineIsHit() throws Exception {
-
         when(mockRandom.nextInt(anyInt())).thenReturn(1);
 
         mvc.perform(
                 post("/api/game/setup/{height}/{width}/",2,3)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
 
         mvc.perform(
                 post("/api/game/play/{x}/{y}/", 1,1)
                         .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+
+        mvc.perform(
+                MockMvcRequestBuilders
+                    .get("/api/game/board/")
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().string("{\"field\":[\"111\",\"1*1\"],\"gameOver\":true}"));
+
+    }
+
+    @Test
+    public void getBoardDoesntChangeGameState() throws Exception {
+        when(mockRandom.nextInt(anyInt())).thenReturn(1);
+
+        mvc.perform(
+                post("/api/game/setup/{height}/{width}/",2,3)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+
+        mvc.perform(
+                post("/api/game/play/{x}/{y}/", 0,0)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+
+        mvc.perform(
+                MockMvcRequestBuilders
+                        .get("/api/game/board/")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().string("{\"field\":[\"1..\",\"...\"],\"gameOver\":false}"));
     }
 }
